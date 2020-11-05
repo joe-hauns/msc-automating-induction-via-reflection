@@ -1,0 +1,10 @@
+theory
+  zero	: nat.
+  s	: nat -> nat.
+  +	: (nat, nat) -> nat.
+  inductive s.
+  inductive zero.
+  forall y: nat. (zero() + y) = y.
+  forall x: nat, y: nat. (s(x) + y) = s((x + y)).
+conjecture
+  forall x: nat, y: nat, z: nat. (x + (y + z)) = ((x + y) + z).

@@ -1,0 +1,10 @@
+theory
+  zero	: nat.
+  s	: nat -> nat.
+  <=	: P(nat, nat).
+  inductive s.
+  inductive zero.
+  forall x: nat. (x <= x).
+  forall x: nat, y: nat. ((x <= y) -> (x <= s(y))).
+conjecture
+  forall x: nat, y: nat, z: nat. (((x <= y) /\ (y <= z)) -> (x <= z)).

@@ -1,0 +1,45 @@
+val  alpha : type.
+val  env : type.
+val  form : type.
+val  var_alpha : type.
+val  term_alpha : type.
+val a : alpha.
+val b : alpha.
+val c : alpha.
+val v0_alpha : var_alpha.
+val next_alpha : var_alpha -> var_alpha.
+val inj_alpha : var_alpha -> term_alpha.
+val aR : term_alpha.
+val bR : term_alpha.
+val cR : term_alpha.
+val pR : term_alpha -> form.
+val qR : term_alpha -> form.
+val rR : term_alpha -> form.
+val eq_alpha : term_alpha -> term_alpha -> form.
+val falseR : form.
+val orR : form -> form -> form.
+val notR : form -> form.
+val forallR_alpha : var_alpha -> form -> form.
+val empty : env.
+val push_alpha : env -> var_alpha -> alpha -> env.
+val evalV_alpha : env -> var_alpha -> alpha.
+val eval_alpha : env -> term_alpha -> alpha.
+val p : alpha -> prop.
+val q : alpha -> prop.
+val r : alpha -> prop.
+val models : env -> form -> prop.
+assert (forall(Env:env). (forall(V:var_alpha). (forall(X:alpha). (evalV_alpha (push_alpha Env V X) V) = X))).
+assert (forall(Env:env). (forall(V:var_alpha). (forall(W:var_alpha). (forall(X:alpha). (~(V = W) => (evalV_alpha (push_alpha Env W X) V) = (evalV_alpha Env V)))))).
+assert (forall(Env:env). (forall(V:var_alpha). (eval_alpha Env (inj_alpha V)) = (evalV_alpha Env V))).
+assert (forall(Env:env). (eval_alpha Env aR) = a).
+assert (forall(Env:env). (eval_alpha Env bR) = b).
+assert (forall(Env:env). (eval_alpha Env cR) = c).
+assert (forall(Env:env). (forall(X:term_alpha). (forall(Y:term_alpha). ((models Env (eq_alpha X Y)) <=> (eval_alpha Env X) = (eval_alpha Env Y))))).
+assert (forall(Env:env). (forall(T0:term_alpha). ((models Env (pR T0)) <=> (p (eval_alpha Env T0))))).
+assert (forall(Env:env). (forall(T0:term_alpha). ((models Env (qR T0)) <=> (q (eval_alpha Env T0))))).
+assert (forall(Env:env). (forall(T0:term_alpha). ((models Env (rR T0)) <=> (r (eval_alpha Env T0))))).
+assert (forall(Env:env). ((models Env falseR) <=> false)).
+assert (forall(Env:env). (forall(Phi:form). ((models Env (notR Phi)) <=> ~((models Env Phi))))).
+assert (forall(Env:env). (forall(Phi:form). (forall(Psi:form). ((models Env (orR Phi Psi)) <=> ((models Env Phi) || (models Env Psi)))))).
+assert (forall(Env:env). (forall(Phi:form). (forall(V:var_alpha). ((models Env (forallR_alpha V Phi)) <=> (forall(X:alpha). (models (push_alpha Env V X) Phi)))))).
+goal   (models empty (forallR_alpha v0_alpha (orR (pR (inj_alpha v0_alpha)) (notR (pR (inj_alpha v0_alpha)))))).

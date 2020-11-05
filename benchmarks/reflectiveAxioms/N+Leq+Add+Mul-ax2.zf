@@ -1,0 +1,48 @@
+val  env : type.
+val  form : type.
+val  var_nat : type.
+val  term_nat : type.
+data nat := 
+  | zero 
+  | s nat.
+val plus : nat -> nat -> nat.
+val times : nat -> nat -> nat.
+val v0_nat : var_nat.
+val next_nat : var_nat -> var_nat.
+val inj_nat : var_nat -> term_nat.
+val zeroR : term_nat.
+val sR : term_nat -> term_nat.
+val addR : term_nat -> term_nat -> term_nat.
+val mulR : term_nat -> term_nat -> term_nat.
+val leqR : term_nat -> term_nat -> form.
+val eq_nat : term_nat -> term_nat -> form.
+val falseR : form.
+val orR : form -> form -> form.
+val notR : form -> form.
+val forallR_nat : var_nat -> form -> form.
+val empty : env.
+val push_nat : env -> var_nat -> nat -> env.
+val evalV_nat : env -> var_nat -> nat.
+val eval_nat : env -> term_nat -> nat.
+val leq : nat -> nat -> prop.
+val models : env -> form -> prop.
+assert (forall(X:nat). (leq X X)).
+assert (forall(X:nat). (forall(Y:nat). ((leq X Y) => (leq X (s Y))))).
+assert (forall(Y:nat). (plus zero Y) = Y).
+assert (forall(X:nat). (forall(Y:nat). (plus (s X) Y) = (s (plus X Y)))).
+assert (forall(Y:nat). (times zero Y) = zero).
+assert (forall(X:nat). (forall(Y:nat). (times (s X) Y) = (plus Y (times X Y)))).
+assert (forall(Env:env). (forall(V:var_nat). (forall(X:nat). (evalV_nat (push_nat Env V X) V) = X))).
+assert (forall(Env:env). (forall(V:var_nat). (forall(W:var_nat). (forall(X:nat). (~(V = W) => (evalV_nat (push_nat Env W X) V) = (evalV_nat Env V)))))).
+assert (forall(Env:env). (forall(V:var_nat). (eval_nat Env (inj_nat V)) = (evalV_nat Env V))).
+assert (forall(Env:env). (eval_nat Env zeroR) = zero).
+assert (forall(Env:env). (forall(T0:term_nat). (eval_nat Env (sR T0)) = (s (eval_nat Env T0)))).
+assert (forall(Env:env). (forall(T0:term_nat). (forall(T1:term_nat). (eval_nat Env (addR T0 T1)) = (plus (eval_nat Env T0) (eval_nat Env T1))))).
+assert (forall(Env:env). (forall(T0:term_nat). (forall(T1:term_nat). (eval_nat Env (mulR T0 T1)) = (times (eval_nat Env T0) (eval_nat Env T1))))).
+assert (forall(Env:env). (forall(X:term_nat). (forall(Y:term_nat). ((models Env (eq_nat X Y)) <=> (eval_nat Env X) = (eval_nat Env Y))))).
+assert (forall(Env:env). (forall(T0:term_nat). (forall(T1:term_nat). ((models Env (leqR T0 T1)) <=> (leq (eval_nat Env T0) (eval_nat Env T1)))))).
+assert (forall(Env:env). ((models Env falseR) <=> false)).
+assert (forall(Env:env). (forall(Phi:form). ((models Env (notR Phi)) <=> ~((models Env Phi))))).
+assert (forall(Env:env). (forall(Phi:form). (forall(Psi:form). ((models Env (orR Phi Psi)) <=> ((models Env Phi) || (models Env Psi)))))).
+assert (forall(Env:env). (forall(Phi:form). (forall(V:var_nat). ((models Env (forallR_nat V Phi)) <=> (forall(X:nat). (models (push_nat Env V X) Phi)))))).
+goal   (models empty (forallR_nat v0_nat (eq_nat (addR zeroR (inj_nat v0_nat)) (inj_nat v0_nat)))).

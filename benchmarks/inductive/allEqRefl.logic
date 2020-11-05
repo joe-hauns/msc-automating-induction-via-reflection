@@ -1,0 +1,14 @@
+theory
+  zero	: nat.
+  s	: nat ↦ nat.
+  equal	: P(nat, nat, nat).
+  inductive s.
+  inductive zero.
+  equal(zero(),zero(),zero()) ↔ ⊤.
+  ∀ y: nat, z: nat. (equal(zero(),s(y),z) ↔ ⊥).
+  ∀ y: nat, z: nat. (equal(zero(),y,s(z)) ↔ ⊥).
+  ∀ x: nat, z: nat. (equal(s(x),zero(),z) ↔ ⊥).
+  ∀ x: nat, y: nat. (equal(s(x),y,zero()) ↔ ⊥).
+  ∀ x: nat, y: nat, z: nat. (equal(s(x),s(y),s(z)) ↔ equal(x,y,z)).
+conjecture
+  ∀ x: nat. equal(x,x,x).

@@ -1,0 +1,67 @@
+theory
+  zero	: nat.
+  s	: nat ↦ nat.
+  nil	: lst.
+  cons	: (nat, lst) ↦ lst.
+  ++	: (lst, lst) ↦ lst.
+  rev	: lst ↦ lst.
+  v0_nat	: var_nat.
+  v0_lst	: var_lst.
+  next_nat	: var_nat ↦ var_nat.
+  next_lst	: var_lst ↦ var_lst.
+  inj_nat	: var_nat ↦ term_nat.
+  inj_lst	: var_lst ↦ term_lst.
+  zeroR	: term_nat.
+  sR	: term_nat ↦ term_nat.
+  nilR	: term_lst.
+  consR	: (term_nat, term_lst) ↦ term_lst.
+  appR	: (term_lst, term_lst) ↦ term_lst.
+  revR	: term_lst ↦ term_lst.
+  eq_nat	: (term_nat, term_nat) ↦ form.
+  eq_lst	: (term_lst, term_lst) ↦ form.
+  falseR	: form.
+  orR	: (form, form) ↦ form.
+  notR	: form ↦ form.
+  forallR_nat	: (var_nat, form) ↦ form.
+  forallR_lst	: (var_lst, form) ↦ form.
+  empty	: env.
+  push_nat	: (env, var_nat, nat) ↦ env.
+  push_lst	: (env, var_lst, lst) ↦ env.
+  evalV_nat	: (env, var_nat) ↦ nat.
+  evalV_lst	: (env, var_lst) ↦ lst.
+  eval_nat	: (env, term_nat) ↦ nat.
+  eval_lst	: (env, term_lst) ↦ lst.
+  |=	: P(env, form).
+  ∀ r: lst. (nil() ++ r) = r.
+  ∀ a: nat, l: lst, r: lst. (cons(a,l) ++ r) = cons(a,(l ++ r)).
+  rev(nil()) = nil().
+  ∀ x: nat, xs: lst. rev(cons(x,xs)) = (rev(xs) ++ cons(x,nil())).
+  ∀ env: env, v: var_nat, x: nat. evalV_nat(push_nat(env,v,x),v) = x.
+  ∀ env: env, v: var_lst, x: lst. evalV_lst(push_lst(env,v,x),v) = x.
+  ∀ env: env, v: var_nat, w: var_nat, x: nat. (v ≠ w → evalV_nat(push_nat(env,w,x),v) = evalV_nat(env,v)).
+  ∀ env: env, v: var_lst, w: var_lst, x: lst. (v ≠ w → evalV_lst(push_lst(env,w,x),v) = evalV_lst(env,v)).
+  ∀ env: env, v: var_nat, w: var_lst, x: lst. evalV_nat(push_lst(env,w,x),v) = evalV_nat(env,v).
+  ∀ env: env, v: var_lst, w: var_nat, x: nat. evalV_lst(push_nat(env,w,x),v) = evalV_lst(env,v).
+  ∀ env: env, v: var_nat. eval_nat(env,inj_nat(v)) = evalV_nat(env,v).
+  ∀ env: env, v: var_lst. eval_lst(env,inj_lst(v)) = evalV_lst(env,v).
+  ∀ env: env. eval_nat(env,zeroR()) = zero().
+  ∀ env: env, t0: term_nat. eval_nat(env,sR(t0)) = s(eval_nat(env,t0)).
+  ∀ env: env. eval_lst(env,nilR()) = nil().
+  ∀ env: env, t0: term_nat, t1: term_lst. eval_lst(env,consR(t0,t1)) = cons(eval_nat(env,t0),eval_lst(env,t1)).
+  ∀ env: env, t0: term_lst, t1: term_lst. eval_lst(env,appR(t0,t1)) = (eval_lst(env,t0) ++ eval_lst(env,t1)).
+  ∀ env: env, t0: term_lst. eval_lst(env,revR(t0)) = rev(eval_lst(env,t0)).
+  ∀ env: env, x: term_nat, y: term_nat. ((env |= eq_nat(x,y)) ↔ eval_nat(env,x) = eval_nat(env,y)).
+  ∀ env: env, x: term_lst, y: term_lst. ((env |= eq_lst(x,y)) ↔ eval_lst(env,x) = eval_lst(env,y)).
+  ∀ env: env. ((env |= falseR()) ↔ ⊥).
+  ∀ env: env, phi: form. ((env |= notR(phi)) ↔ ¬(env |= phi)).
+  ∀ env: env, phi: form, psi: form. ((env |= orR(phi,psi)) ↔ ((env |= phi) ∨ (env |= psi))).
+  ∀ env: env, phi: form, v: var_nat. ((env |= forallR_nat(v,phi)) ↔ ∀ x: nat. (push_nat(env,v,x) |= phi)).
+  ∀ env: env, phi: form, v: var_lst. ((env |= forallR_lst(v,phi)) ↔ ∀ x: lst. (push_lst(env,v,x) |= phi)).
+  ∀ phi: form. (((⊤ → (push_nat(empty(),v0_nat(),zero()) |= phi)) ∧ ∀ x0: nat. ((push_nat(empty(),v0_nat(),x0) |= phi) → (push_nat(empty(),v0_nat(),s(x0)) |= phi))) → ∀ x: nat. (push_nat(empty(),v0_nat(),x) |= phi)).
+  ∀ phi: form. (((⊤ → (push_lst(empty(),v0_lst(),nil()) |= phi)) ∧ ∀ x0: nat, x1: lst. ((push_lst(empty(),v0_lst(),x1) |= phi) → (push_lst(empty(),v0_lst(),cons(x0,x1)) |= phi))) → ∀ x: lst. (push_lst(empty(),v0_lst(),x) |= phi)).
+  ∀ x0: nat. zero() ≠ s(x0).
+  ∀ x0: nat, x1: lst. nil() ≠ cons(x0,x1).
+  ∀ x0: nat, x1: nat. (s(x0) = s(x1) → x0 = x1).
+  ∀ x0: nat, x1: lst, x2: nat, x3: lst. (cons(x0,x1) = cons(x2,x3) → (x0 = x2 ∧ x1 = x3)).
+conjecture
+  ∀ x: lst. rev((x ++ (x ++ x))) = rev(((x ++ x) ++ x)).

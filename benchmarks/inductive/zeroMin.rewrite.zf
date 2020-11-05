@@ -1,0 +1,7 @@
+data nat := 
+  | zero 
+  | s nat.
+def leq : nat -> nat -> prop where
+	(forall(X:nat). (leq X X)).
+assert (forall(X:nat). (forall(Y:nat). ((leq X Y) => (leq X (s Y))))).
+goal   (forall(X:nat). (leq zero X)).

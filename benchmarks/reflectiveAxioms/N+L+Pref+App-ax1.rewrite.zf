@@ -1,0 +1,68 @@
+val  env : type.
+val  form : type.
+val  var_lst : type.
+val  var_nat : type.
+val  term_nat : type.
+val  term_lst : type.
+data nat := 
+  | zero 
+  | s nat.
+data lst := 
+  | nil 
+  | cons nat lst.
+val v0_lst : var_lst.
+val v0_nat : var_nat.
+val next_lst : var_lst -> var_lst.
+val next_nat : var_nat -> var_nat.
+val inj_lst : var_lst -> term_lst.
+val inj_nat : var_nat -> term_nat.
+val zeroR : term_nat.
+val sR : term_nat -> term_nat.
+val nilR : term_lst.
+val consR : term_nat -> term_lst -> term_lst.
+val appR : term_lst -> term_lst -> term_lst.
+val prefR : term_lst -> term_lst -> form.
+val eq_lst : term_lst -> term_lst -> form.
+val eq_nat : term_nat -> term_nat -> form.
+val falseR : form.
+val orR : form -> form -> form.
+val notR : form -> form.
+val forallR_lst : var_lst -> form -> form.
+val forallR_nat : var_nat -> form -> form.
+val empty : env.
+val push_lst : env -> var_lst -> lst -> env.
+val push_nat : env -> var_nat -> nat -> env.
+def plusPlus : lst -> lst -> lst where
+	(forall(R:lst). (plusPlus nil R) = R);
+	(forall(A:nat). (forall(L:lst). (forall(R:lst). (plusPlus (cons A L) R) = (cons A (plusPlus L R))))).
+def evalV_lst : env -> var_lst -> lst where
+	(forall(Env:env). (forall(V:var_lst). (forall(X:lst). (evalV_lst (push_lst Env V X) V) = X)));
+	(forall(Env:env). (forall(V:var_lst). (forall(W:var_nat). (forall(X:nat). (evalV_lst (push_nat Env W X) V) = (evalV_lst Env V))))).
+def evalV_nat : env -> var_nat -> nat where
+	(forall(Env:env). (forall(V:var_nat). (forall(X:nat). (evalV_nat (push_nat Env V X) V) = X)));
+	(forall(Env:env). (forall(V:var_nat). (forall(W:var_lst). (forall(X:lst). (evalV_nat (push_lst Env W X) V) = (evalV_nat Env V))))).
+def eval_lst : env -> term_lst -> lst where
+	(forall(Env:env). (forall(V:var_lst). (eval_lst Env (inj_lst V)) = (evalV_lst Env V)));
+	(forall(Env:env). (eval_lst Env nilR) = nil);
+	(forall(Env:env). (forall(T0:term_nat). (forall(T1:term_lst). (eval_lst Env (consR T0 T1)) = (cons (eval_nat Env T0) (eval_lst Env T1)))));
+	(forall(Env:env). (forall(T0:term_lst). (forall(T1:term_lst). (eval_lst Env (appR T0 T1)) = (plusPlus (eval_lst Env T0) (eval_lst Env T1))))).
+def eval_nat : env -> term_nat -> nat where
+	(forall(Env:env). (forall(V:var_nat). (eval_nat Env (inj_nat V)) = (evalV_nat Env V)));
+	(forall(Env:env). (eval_nat Env zeroR) = zero);
+	(forall(Env:env). (forall(T0:term_nat). (eval_nat Env (sR T0)) = (s (eval_nat Env T0)))).
+def pref : lst -> lst -> prop where
+	(forall(X:lst). (pref nil X));
+	(forall(A:nat). (forall(X:lst). ~((pref (cons A X) nil))));
+	(forall(A:nat). (forall(B:nat). (forall(X:lst). (forall(Y:lst). ((pref (cons A X) (cons B Y)) <=> (A = B && (pref X Y))))))).
+def models : env -> form -> prop where
+	(forall(Env:env). (forall(X:term_lst). (forall(Y:term_lst). ((models Env (eq_lst X Y)) <=> (eval_lst Env X) = (eval_lst Env Y)))));
+	(forall(Env:env). (forall(X:term_nat). (forall(Y:term_nat). ((models Env (eq_nat X Y)) <=> (eval_nat Env X) = (eval_nat Env Y)))));
+	(forall(Env:env). (forall(T0:term_lst). (forall(T1:term_lst). ((models Env (prefR T0 T1)) <=> (pref (eval_lst Env T0) (eval_lst Env T1))))));
+	(forall(Env:env). ((models Env falseR) <=> false));
+	(forall(Env:env). (forall(Phi:form). ((models Env (notR Phi)) <=> ~((models Env Phi)))));
+	(forall(Env:env). (forall(Phi:form). (forall(Psi:form). ((models Env (orR Phi Psi)) <=> ((models Env Phi) || (models Env Psi))))));
+	(forall(Env:env). (forall(Phi:form). (forall(V:var_lst). ((models Env (forallR_lst V Phi)) <=> (forall(X:lst). (models (push_lst Env V X) Phi))))));
+	(forall(Env:env). (forall(Phi:form). (forall(V:var_nat). ((models Env (forallR_nat V Phi)) <=> (forall(X:nat). (models (push_nat Env V X) Phi)))))).
+assert (forall(Env:env). (forall(V:var_lst). (forall(W:var_lst). (forall(X:lst). (~(V = W) => (evalV_lst (push_lst Env W X) V) = (evalV_lst Env V)))))).
+assert (forall(Env:env). (forall(V:var_nat). (forall(W:var_nat). (forall(X:nat). (~(V = W) => (evalV_nat (push_nat Env W X) V) = (evalV_nat Env V)))))).
+goal   (models empty (forallR_nat v0_nat (forallR_lst v0_lst (notR (prefR (consR (inj_nat v0_nat) (inj_lst v0_lst)) nilR))))).

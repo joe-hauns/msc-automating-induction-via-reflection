@@ -1,0 +1,22 @@
+theory
+  zero	: nat.
+  s	: nat -> nat.
+  nil	: lst.
+  cons	: (nat, lst) -> lst.
+  ++	: (lst, lst) -> lst.
+  rev	: lst -> lst.
+  rev'	: lst -> lst.
+  revAcc	: (lst, lst) -> lst.
+  inductive s.
+  inductive zero.
+  inductive cons.
+  inductive nil.
+  forall r: lst. (nil() ++ r) = r.
+  forall a: nat, l: lst, r: lst. (cons(a,l) ++ r) = cons(a,(l ++ r)).
+  rev(nil()) = nil().
+  forall x: nat, xs: lst. rev(cons(x,xs)) = (rev(xs) ++ cons(x,nil())).
+  forall x: lst. rev'(x) = revAcc(x,nil()).
+  forall acc: lst. revAcc(nil(),acc) = acc.
+  forall acc: lst, x: nat, xs: lst. revAcc(cons(x,xs),acc) = revAcc(xs,cons(x,acc)).
+conjecture
+  forall x: lst. rev(x) = rev'(x).

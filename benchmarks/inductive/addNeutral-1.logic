@@ -1,0 +1,13 @@
+theory
+  zero	: nat.
+  s	: nat ↦ nat.
+  +	: (nat, nat) ↦ nat.
+  *	: (nat, nat) ↦ nat.
+  inductive s.
+  inductive zero.
+  ∀ y: nat. (zero() + y) = y.
+  ∀ x: nat, y: nat. (s(x) + y) = s((x + y)).
+  ∀ y: nat. (zero() * y) = zero().
+  ∀ x: nat, y: nat. (s(x) * y) = (y + (x * y)).
+conjecture
+  ∀ x: nat. (s(zero()) * x) = x.

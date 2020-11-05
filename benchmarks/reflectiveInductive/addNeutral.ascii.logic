@@ -1,0 +1,38 @@
+theory
+  zero	: nat.
+  s	: nat -> nat.
+  +	: (nat, nat) -> nat.
+  v0_nat	: var_nat.
+  next_nat	: var_nat -> var_nat.
+  inj_nat	: var_nat -> term_nat.
+  zeroR	: term_nat.
+  sR	: term_nat -> term_nat.
+  addR	: (term_nat, term_nat) -> term_nat.
+  eq_nat	: (term_nat, term_nat) -> form.
+  falseR	: form.
+  orR	: (form, form) -> form.
+  notR	: form -> form.
+  forallR_nat	: (var_nat, form) -> form.
+  empty	: env.
+  push_nat	: (env, var_nat, nat) -> env.
+  evalV_nat	: (env, var_nat) -> nat.
+  eval_nat	: (env, term_nat) -> nat.
+  |=	: P(env, form).
+  forall y: nat. (zero() + y) = y.
+  forall x: nat, y: nat. (s(x) + y) = s((x + y)).
+  forall env: env, v: var_nat, x: nat. evalV_nat(push_nat(env,v,x),v) = x.
+  forall env: env, v: var_nat, w: var_nat, x: nat. (v /= w -> evalV_nat(push_nat(env,w,x),v) = evalV_nat(env,v)).
+  forall env: env, v: var_nat. eval_nat(env,inj_nat(v)) = evalV_nat(env,v).
+  forall env: env. eval_nat(env,zeroR()) = zero().
+  forall env: env, t0: term_nat. eval_nat(env,sR(t0)) = s(eval_nat(env,t0)).
+  forall env: env, t0: term_nat, t1: term_nat. eval_nat(env,addR(t0,t1)) = (eval_nat(env,t0) + eval_nat(env,t1)).
+  forall env: env, x: term_nat, y: term_nat. ((env |= eq_nat(x,y)) <-> eval_nat(env,x) = eval_nat(env,y)).
+  forall env: env. ((env |= falseR()) <-> false).
+  forall env: env, phi: form. ((env |= notR(phi)) <-> ~(env |= phi)).
+  forall env: env, phi: form, psi: form. ((env |= orR(phi,psi)) <-> ((env |= phi) \/ (env |= psi))).
+  forall env: env, phi: form, v: var_nat. ((env |= forallR_nat(v,phi)) <-> forall x: nat. (push_nat(env,v,x) |= phi)).
+  forall phi: form. (((true -> (push_nat(empty(),v0_nat(),zero()) |= phi)) /\ forall x0: nat. ((push_nat(empty(),v0_nat(),x0) |= phi) -> (push_nat(empty(),v0_nat(),s(x0)) |= phi))) -> forall x: nat. (push_nat(empty(),v0_nat(),x) |= phi)).
+  forall x0: nat. zero() /= s(x0).
+  forall x0: nat, x1: nat. (s(x0) = s(x1) -> x0 = x1).
+conjecture
+  forall x: nat. (x + zero()) = x.

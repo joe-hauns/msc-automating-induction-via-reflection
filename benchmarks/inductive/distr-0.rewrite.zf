@@ -1,0 +1,10 @@
+data nat := 
+  | zero 
+  | s nat.
+def plus : nat -> nat -> nat where
+	(forall(Y:nat). (plus zero Y) = Y);
+	(forall(X:nat). (forall(Y:nat). (plus (s X) Y) = (s (plus X Y)))).
+def times : nat -> nat -> nat where
+	(forall(Y:nat). (times zero Y) = zero);
+	(forall(X:nat). (forall(Y:nat). (times (s X) Y) = (plus Y (times X Y)))).
+goal   (forall(X:nat). (forall(Y:nat). (forall(Z:nat). (times X (plus Y Z)) = (plus (times X Y) (times X Z))))).

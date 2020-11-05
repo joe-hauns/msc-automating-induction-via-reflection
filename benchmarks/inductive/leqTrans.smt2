@@ -1,0 +1,7 @@
+(set-logic UFDT)
+(declare-datatypes ((nat 0)) (((zero) (s (s0 nat)))))
+(declare-fun leq (nat nat) Bool)
+(assert (forall ((x nat)) (leq x x)))
+(assert (forall ((x nat) (y nat)) (=> (leq x y) (leq x (s y)))))
+(assert (not (forall ((x nat) (y nat) (z nat)) (=> (and (leq x y) (leq y z)) (leq x z)))))
+(check-sat)

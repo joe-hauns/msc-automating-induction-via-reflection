@@ -1,0 +1,14 @@
+theory
+  zero	: nat.
+  s	: nat ↦ nat.
+  nil	: lst.
+  cons	: (nat, lst) ↦ lst.
+  ++	: (lst, lst) ↦ lst.
+  inductive s.
+  inductive zero.
+  inductive cons.
+  inductive nil.
+  ∀ r: lst. (nil() ++ r) = r.
+  ∀ a: nat, l: lst, r: lst. (cons(a,l) ++ r) = cons(a,(l ++ r)).
+conjecture
+  ∀ x: lst, y: lst, z: lst. (x ++ (y ++ z)) = ((x ++ y) ++ z).

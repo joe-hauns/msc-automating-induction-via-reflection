@@ -1,0 +1,18 @@
+theory
+  zero	: nat.
+  s	: nat ↦ nat.
+  nil	: lst.
+  cons	: (nat, lst) ↦ lst.
+  ++	: (lst, lst) ↦ lst.
+  pref	: P(lst, lst).
+  inductive s.
+  inductive zero.
+  inductive cons.
+  inductive nil.
+  ∀ x: lst. pref(nil(),x).
+  ∀ a: nat, x: lst. ¬pref(cons(a,x),nil()).
+  ∀ a: nat, b: nat, x: lst, y: lst. (pref(cons(a,x),cons(b,y)) ↔ (a = b ∧ pref(x,y))).
+  ∀ r: lst. (nil() ++ r) = r.
+  ∀ a: nat, l: lst, r: lst. (cons(a,l) ++ r) = cons(a,(l ++ r)).
+conjecture
+  ∀ x: lst, y: lst. pref(x,(x ++ y)).

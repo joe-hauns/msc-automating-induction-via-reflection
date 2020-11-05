@@ -1,0 +1,42 @@
+theory
+  a	: alpha.
+  b	: alpha.
+  c	: alpha.
+  v0_alpha	: var_alpha.
+  next_alpha	: var_alpha -> var_alpha.
+  inj_alpha	: var_alpha -> term_alpha.
+  aR	: term_alpha.
+  bR	: term_alpha.
+  cR	: term_alpha.
+  pR	: term_alpha -> form.
+  qR	: term_alpha -> form.
+  rR	: term_alpha -> form.
+  eq_alpha	: (term_alpha, term_alpha) -> form.
+  falseR	: form.
+  orR	: (form, form) -> form.
+  notR	: form -> form.
+  forallR_alpha	: (var_alpha, form) -> form.
+  empty	: env.
+  push_alpha	: (env, var_alpha, alpha) -> env.
+  evalV_alpha	: (env, var_alpha) -> alpha.
+  eval_alpha	: (env, term_alpha) -> alpha.
+  p	: P(alpha).
+  q	: P(alpha).
+  r	: P(alpha).
+  |=	: P(env, form).
+  forall env: env, v: var_alpha, x: alpha. evalV_alpha(push_alpha(env,v,x),v) = x.
+  forall env: env, v: var_alpha, w: var_alpha, x: alpha. (v /= w -> evalV_alpha(push_alpha(env,w,x),v) = evalV_alpha(env,v)).
+  forall env: env, v: var_alpha. eval_alpha(env,inj_alpha(v)) = evalV_alpha(env,v).
+  forall env: env. eval_alpha(env,aR()) = a().
+  forall env: env. eval_alpha(env,bR()) = b().
+  forall env: env. eval_alpha(env,cR()) = c().
+  forall env: env, x: term_alpha, y: term_alpha. ((env |= eq_alpha(x,y)) <-> eval_alpha(env,x) = eval_alpha(env,y)).
+  forall env: env, t0: term_alpha. ((env |= pR(t0)) <-> p(eval_alpha(env,t0))).
+  forall env: env, t0: term_alpha. ((env |= qR(t0)) <-> q(eval_alpha(env,t0))).
+  forall env: env, t0: term_alpha. ((env |= rR(t0)) <-> r(eval_alpha(env,t0))).
+  forall env: env. ((env |= falseR()) <-> false).
+  forall env: env, phi: form. ((env |= notR(phi)) <-> ~(env |= phi)).
+  forall env: env, phi: form, psi: form. ((env |= orR(phi,psi)) <-> ((env |= phi) \/ (env |= psi))).
+  forall env: env, phi: form, v: var_alpha. ((env |= forallR_alpha(v,phi)) <-> forall x: alpha. (push_alpha(env,v,x) |= phi)).
+conjecture
+  (empty() |= forallR_alpha(v0_alpha(),forallR_alpha(next_alpha(v0_alpha()),orR(notR(orR(notR(orR(notR(pR(inj_alpha(v0_alpha()))),qR(inj_alpha(next_alpha(v0_alpha()))))),notR(orR(notR(notR(qR(inj_alpha(next_alpha(v0_alpha()))))),notR(pR(inj_alpha(v0_alpha()))))))),notR(orR(notR(notR(orR(notR(pR(inj_alpha(v0_alpha()))),qR(inj_alpha(next_alpha(v0_alpha())))))),notR(notR(orR(notR(notR(qR(inj_alpha(next_alpha(v0_alpha()))))),notR(pR(inj_alpha(v0_alpha())))))))))))).

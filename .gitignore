@@ -1,0 +1,15 @@
+main
+dist
+cabal.project.local
+cabal.project.local~
+dist-newstyle/
+test_out/
+proofscripts
+stack.yaml.lock
+.stack-work/
+out
+.my-stack-work-dir build.sh
+.imandra_init.log
+build.sh
+isa
+.my-stack-work-dir

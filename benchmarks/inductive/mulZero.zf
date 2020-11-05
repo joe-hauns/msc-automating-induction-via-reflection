@@ -1,0 +1,10 @@
+data nat := 
+  | zero 
+  | s nat.
+val plus : nat -> nat -> nat.
+val times : nat -> nat -> nat.
+assert (forall(Y:nat). (plus zero Y) = Y).
+assert (forall(X:nat). (forall(Y:nat). (plus (s X) Y) = (s (plus X Y)))).
+assert (forall(Y:nat). (times zero Y) = zero).
+assert (forall(X:nat). (forall(Y:nat). (times (s X) Y) = (plus Y (times X Y)))).
+goal   (forall(X:nat). (times X zero) = zero).

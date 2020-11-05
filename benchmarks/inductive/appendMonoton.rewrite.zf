@@ -1,0 +1,14 @@
+data nat := 
+  | zero 
+  | s nat.
+data lst := 
+  | nil 
+  | cons nat lst.
+def plusPlus : lst -> lst -> lst where
+	(forall(R:lst). (plusPlus nil R) = R);
+	(forall(A:nat). (forall(L:lst). (forall(R:lst). (plusPlus (cons A L) R) = (cons A (plusPlus L R))))).
+def pref : lst -> lst -> prop where
+	(forall(X:lst). (pref nil X));
+	(forall(A:nat). (forall(X:lst). ~((pref (cons A X) nil))));
+	(forall(A:nat). (forall(B:nat). (forall(X:lst). (forall(Y:lst). ((pref (cons A X) (cons B Y)) <=> (A = B && (pref X Y))))))).
+goal   (forall(X:lst). (forall(Y:lst). (pref X (plusPlus X Y)))).
