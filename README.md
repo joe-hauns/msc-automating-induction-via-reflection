@@ -38,4 +38,4 @@ Translates `01.logic` into the same problem, but with induction replaced by its 
 $ cat examples/01.logic| stack run toRefl
 ```
 
-Translates `01.logic` into the same problem, but with reflective axioms of the theory added, and the conclusion translated into its goedelized form.
+Translates `01.logic` into the same problem, but with reflective axioms of the theory added, and the conclusion translated into its gödelized form.
